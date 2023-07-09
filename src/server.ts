@@ -1,11 +1,18 @@
-import express, { Request, Response } from "express";
+import mongoose from "mongoose";
+import { app } from "./app";
+import config from "./config";
 
-const app = express();
-const port = process.env.PORT || 5000;
-app.get("/", (req: Request, res: Response) => {
-  res.send("in the name of Allah");
-});
+const port = config.port || 5000;
+async function connectDb() {
+  try {
+    await mongoose.connect(config.databaseUrl as string);
+    console.log("database connected successfully");
+    app.listen(port, () => {
+      console.log(`server is running on ${port}`);
+    });
+  } catch (err) {
+    console.log("database connection failed", err);
+  }
+}
 
-app.listen(port, () => {
-  console.log(`server is running on ${port}`);
-});
+connectDb();
