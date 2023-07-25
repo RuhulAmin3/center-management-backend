@@ -15,11 +15,37 @@ type EducationalQualificationType = {
 type AttendanceType = {
   date: Date;
   isPresent: boolean;
+  month:
+    | "January"
+    | "February"
+    | "March"
+    | "April"
+    | "May"
+    | "June"
+    | "July"
+    | "August"
+    | "September"
+    | "October"
+    | "November"
+    | "December";
   shortDescription?: string;
 };
 
 type TransactionHistoryType = {
   date: Date;
+  month:
+    | "January"
+    | "February"
+    | "March"
+    | "April"
+    | "May"
+    | "June"
+    | "July"
+    | "August"
+    | "September"
+    | "October"
+    | "November"
+    | "December";
   total: string;
   pay: string;
   due: string;

@@ -1,0 +1,85 @@
+import { Types } from "mongoose";
+import { IExam } from "../exam/exam.interface";
+
+type StudentNameType = {
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+};
+
+type GuardianType = {
+  fatherName: string;
+  fatherOccupation: string;
+  fatherContactNo: string;
+  motherName: string;
+  motherOccupation: string;
+  motherContactNo: string;
+};
+
+type TransactionHistoryType = {
+  date: Date;
+  month:
+    | "January"
+    | "February"
+    | "March"
+    | "April"
+    | "May"
+    | "June"
+    | "July"
+    | "August"
+    | "September"
+    | "October"
+    | "November"
+    | "December";
+  total: string;
+  pay: string;
+  due: string;
+  status?: string;
+  shortDescription?: string;
+};
+
+type ExamResultSubjects = {
+  subjectName: string;
+  totalMark: string;
+  obtainedMark: string;
+};
+
+type ExamResultType = {
+  examName: string;
+  class: string;
+  subject: ExamResultSubjects[];
+  exam: Types.ObjectId | IExam;
+};
+
+export type IStudent = {
+  id: string;
+  name: StudentNameType;
+  gender: "Male" | "Female";
+  dateOfBirth: string;
+  email?: string;
+  contactNo: string;
+  emergencyContactNo?: string;
+  bloodGroup?: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
+  guardian: GuardianType;
+  class: string;
+  classRoll: string;
+  section: string;
+  schoolName: string;
+  subject: string;
+  image: string;
+  presentAddress: string;
+  permanentAddress?: string;
+  shortDescription?: string;
+  transactionHistory: TransactionHistoryType[];
+  examsResult: ExamResultType[];
+};
+
+export type ISearchFields = {
+  searchTerm?: string;
+  id?: string;
+  gender?: string;
+  email?: string;
+  designation?: string;
+  subject?: string;
+  contactNo?: string;
+};

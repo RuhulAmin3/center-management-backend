@@ -1,9 +1,10 @@
 import { Schema, model } from "mongoose";
 import { ITeacher } from "./teacher.interface";
-import { bloodGroup, gender } from "./teacher.constant";
+import { bloodGroup, gender, month } from "./teacher.constant";
 
 const AttendanceSchema = new Schema({
   date: { type: Date, required: true },
+  month: { type: String, required: true, enum: month },
   isPresent: { type: Boolean, required: true },
   shortDescription: { type: String },
 });
@@ -11,6 +12,7 @@ const AttendanceSchema = new Schema({
 const TransactionHistorySchema = new Schema({
   date: { type: Date, required: true },
   total: { type: String, required: true },
+  month: { type: String, required: true, enum: month },
   pay: { type: String, required: true },
   due: { type: String, required: true },
   status: { type: String },
