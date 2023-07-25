@@ -35,7 +35,7 @@ const getSingleTeacher = catchAsync(async (req: Request, res: Response) => {
 });
 const updateTeacher = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { data } = req.body;
+  const data = req.body;
   const result = await teacherService.updateTeacher(id, data);
 
   sendResponse(res, {

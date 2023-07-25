@@ -143,8 +143,6 @@ export const createTeacherZodSchema = z.object({
       permanentAddress: z.string().optional(),
       shortDescription: z.string().optional(),
       image: z.string().optional(),
-      attendance: z.string(),
-      transactionHistory: z.string().optional(),
     }),
   }),
 });

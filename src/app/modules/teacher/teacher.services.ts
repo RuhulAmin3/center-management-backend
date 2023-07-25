@@ -34,7 +34,6 @@ const getAllTeacher = async (
       })),
     });
   }
-
   if (filterData && Object.keys(filterData).length > 0) {
     andCondition.push({
       $and: Object.entries(filterData).map(([field, value]) => ({
@@ -79,11 +78,11 @@ const deleteTeacher = async (id: string): Promise<void> => {
     session.startTransaction();
     await User.findOneAndDelete({ id }, { session });
     await Teacher.findOneAndDelete({ id }, { session });
-    session.commitTransaction();
-    session.endSession();
+    await session.commitTransaction();
+    await session.endSession();
   } catch (err) {
-    session.abortTransaction();
-    session.endSession();
+    await session.abortTransaction();
+    await session.endSession();
     throw err;
   }
 };
@@ -96,9 +95,8 @@ const updateTeacher = async (
   if (!teacher) {
     throw new ApiError(httpStatus.BAD_REQUEST, "teacher does not exist");
   }
-  const { name, educationalQualification, ...restTeacherData } = payload;
+  const { name, educationalQualification, ...restTeacherData } = payload || {};
   const updatedTeacherData: Partial<ITeacher> = { ...restTeacherData };
-
   //   name update dynamically
   if (name && Object.keys(name).length > 0) {
     Object.keys(name).forEach((key) => {
