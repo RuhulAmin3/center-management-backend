@@ -70,8 +70,8 @@ export type ITeacher = {
   presentAddress: string;
   permanentAddress?: string;
   shortDescription?: string;
-  attendance: AttendanceType[];
-  transactionHistory: TransactionHistoryType[];
+  attendance?: AttendanceType[];
+  transactionHistory?: TransactionHistoryType[];
 };
 
 export type ISearchFields = {

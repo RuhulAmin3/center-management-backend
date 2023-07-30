@@ -5,7 +5,9 @@ export const generateStudentId = (
   roll: string,
   section: string
 ): string => {
-  const studentId = `$S${section}-${studentClass}${roll}`;
+  // const randomNumber = Math.floor(Math.random() * 100000).toString();
+  let studentId = `S${section}-${studentClass}${roll}`;
+  studentId = studentId.padEnd(8, "0");
   return studentId;
 };
 

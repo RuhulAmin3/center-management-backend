@@ -14,7 +14,7 @@ app.use(cookiParser());
 app.use("/api/v1", routes);
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("in the name of Allah");
+  res.send("In the name of Allah.");
 });
 
 // handle not found api request using app.all methods
@@ -29,7 +29,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use(globalErrorHandler);
 
-// handle not found api request using middleware(you can choose one)
+// handle not found api request using middleware(you can choose one of both)
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(httpStatus.NOT_FOUND).json({

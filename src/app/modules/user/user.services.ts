@@ -7,9 +7,11 @@ import httpStatus from "http-status";
 import { User } from "./user.model";
 import { ITeacher } from "../teacher/teacher.interface";
 import { Teacher } from "../teacher/teacher.model";
+import { IStudent } from "../student/student.interface";
+import { Student } from "../student/student.model";
 
-const createStudent = async (student, user: IUser) => {
-  const { class: studentClass, roll, section } = student || {};
+const createStudent = async (student: IStudent, user: IUser) => {
+  const { className: studentClass, classRoll, section } = student || {};
 
   // set password
   if (!user?.password) {
@@ -24,20 +26,18 @@ const createStudent = async (student, user: IUser) => {
   let userAllData = null;
   try {
     session.startTransaction();
-    const id = generateStudentId(studentClass, roll, section);
+    const id = generateStudentId(studentClass, classRoll, section);
     user.id = id;
     student.id = id;
-
     // new student will be an array;
     const newStudent = await Student.create([student], { session });
 
-    if (!newStudent.length > 0) {
+    if (!newStudent.length) {
       throw new ApiError(httpStatus.BAD_REQUEST, "failed to create student");
     }
-
     user.student = newStudent[0]._id;
     const newUser = await User.create([user], { session });
-    if (!newUser.length > 0) {
+    if (!newUser.length) {
       throw new ApiError(httpStatus.BAD_REQUEST, "failed to create user");
     }
     userAllData = newUser[0];

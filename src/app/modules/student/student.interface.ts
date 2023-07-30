@@ -17,7 +17,7 @@ type GuardianType = {
 };
 
 type TransactionHistoryType = {
-  date: Date;
+  date: string;
   month:
     | "January"
     | "February"
@@ -46,7 +46,7 @@ type ExamResultSubjects = {
 
 type ExamResultType = {
   examName: string;
-  class: string;
+  className: string;
   subject: ExamResultSubjects[];
   exam: Types.ObjectId | IExam;
 };
@@ -61,17 +61,16 @@ export type IStudent = {
   emergencyContactNo?: string;
   bloodGroup?: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
   guardian: GuardianType;
-  class: string;
+  className: string;
   classRoll: string;
   section: string;
   schoolName: string;
-  subject: string;
-  image: string;
+  image?: string;
   presentAddress: string;
   permanentAddress?: string;
   shortDescription?: string;
-  transactionHistory: TransactionHistoryType[];
-  examsResult: ExamResultType[];
+  transactionHistory?: TransactionHistoryType[];
+  examsResult?: ExamResultType[];
 };
 
 export type ISearchFields = {
@@ -79,7 +78,10 @@ export type ISearchFields = {
   id?: string;
   gender?: string;
   email?: string;
-  designation?: string;
+  className?: string;
+  classRoll?: string;
+  schoolName?: string;
   subject?: string;
+  bloodGroup?: string;
   contactNo?: string;
 };

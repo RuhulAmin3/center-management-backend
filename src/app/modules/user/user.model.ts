@@ -49,7 +49,7 @@ const userSchema = new Schema<IUser>(
 userSchema.pre("save", async function (next) {
   const user = await User.findOne({ id: this.id });
   if (user) {
-    throw new ApiError(httpStatus.CONFLICT, "teacher already exist");
+    throw new ApiError(httpStatus.CONFLICT, "user already exist");
   }
   next();
 });

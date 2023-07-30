@@ -46,6 +46,7 @@ const deleteExam = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 const deleteExamWithExamResult = catchAsync(
   async (req: Request, res: Response) => {
     const { id } = req.params;
