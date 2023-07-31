@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from "http-status";
 import ApiError from "../../../errors/ApiError";
-import mongoose, { SortOrder } from "mongoose";
+import mongoose, { SortOrder, Types } from "mongoose";
 import { User } from "../user/user.model";
 import { IpaginationOptions } from "../../../types/paginations";
 import { calculatePagination } from "../../../shared/calculatePagination";
 import { genericResponseType } from "../../../types/genericResponse";
 import { studentSearchAbleField } from "./student.constant";
-import { ISearchFields, IStudent } from "./student.interface";
+import { ExamResultType, ISearchFields, IStudent } from "./student.interface";
 import { Student } from "./student.model";
 
 const getAllStudent = async (
@@ -104,6 +104,7 @@ const updateStudent = async (
       (updatedStudentData as any)[nameKey] = name[key as keyof typeof name];
     });
   }
+
   if (guardian && Object.keys(guardian).length > 0) {
     Object.keys(guardian).forEach((key) => {
       const guardianKey = `guardian.${key}`;
@@ -118,9 +119,64 @@ const updateStudent = async (
   return result;
 };
 
+const addExamResult = async (
+  id: string,
+  examData: ExamResultType
+): Promise<Partial<IStudent | null>> => {
+  const isResultExist = await Student.findOne({
+    "examsResult.exam": examData.exam,
+    // "examsResult.className": examData.className,
+  });
+  // console.log(isResultExist);
+
+  if (isResultExist) {
+    throw new ApiError(
+      httpStatus.ALREADY_REPORTED,
+      "result already added in your record"
+    );
+  }
+
+  const updatedResult = await Student.findOneAndUpdate(
+    { id },
+    {
+      $addToSet: {
+        examsResult: examData,
+      },
+    },
+    // $addToSet: {
+    //   examsResult: { $each: [examData] },
+    // },
+    // },
+    {
+      new: true,
+    }
+  ).select("examsResult");
+  return updatedResult;
+};
+
+const deleteExamResult = async (
+  id: string,
+  resultId: string
+): Promise<void> => {
+  const deletedResultId = new Types.ObjectId(resultId);
+  await Student.findOneAndUpdate(
+    { id },
+    {
+      $pull: {
+        examsResult: { _id: deletedResultId },
+      },
+    },
+    {
+      new: true,
+    }
+  );
+};
+
 export const studentService = {
   getAllStudent,
   getStudent,
   updateStudent,
   deleteStudent,
+  addExamResult,
+  deleteExamResult,
 };

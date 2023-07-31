@@ -15,13 +15,21 @@ router.patch(
 
 router.delete(
   "/:id",
-  //   authValidation(USER_ROLE.ADMIN),
+  authValidation(USER_ROLE.ADMIN),
   studentController.deleteStudent
 );
 router.get("/", studentController.getAllStudent);
 
 // exam result routes
-// router.patch("/exam-result", studentController.addExamResult);
-// router.patch("/exam-result/:id", studentController.deleteExamResult);
+router.patch(
+  "/result/:id",
+  validationRequest(studentValidation.addExamResultZodSchema),
+  studentController.addExamResult
+);
+router.patch(
+  "/delete-result/:id",
+  validationRequest(studentValidation.deleteExamResultZodSchema),
+  studentController.deleteExamResult
+);
 
 export default router;

@@ -44,7 +44,7 @@ type ExamResultSubjects = {
   obtainedMark: string;
 };
 
-type ExamResultType = {
+export type ExamResultType = {
   examName: string;
   className: string;
   subject: ExamResultSubjects[];
