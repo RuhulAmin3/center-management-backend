@@ -12,12 +12,16 @@ const TransactionHistorySchema = new Schema({
     enum: month,
     required: true,
   },
-  total: {
+  year: {
     type: String,
     required: true,
   },
-  pay: { type: String, required: true },
-  due: { type: String, required: true },
+  total: {
+    type: Number,
+    required: true,
+  },
+  pay: { type: Number, required: true },
+  due: { type: Number, default: 0 },
   status: { type: String },
   shortDescription: { type: String },
 });
@@ -25,8 +29,10 @@ const TransactionHistorySchema = new Schema({
 const ExamResultSubjectsSchema = new Schema(
   {
     subjectName: { type: String, required: true },
-    totalMark: { type: String, required: true },
-    obtainedMark: { type: String, required: true },
+    totalMark: { type: Number, required: true },
+    obtainedMark: { type: Number, required: true },
+    point: { type: Number, required: true },
+    grade: { type: String, required: true },
   }
   // { _id: false }
 );
@@ -37,8 +43,10 @@ const ExamResultSchema = new Schema(
     className: { type: String, required: true },
     subject: { type: [ExamResultSubjectsSchema], required: true },
     exam: { type: Schema.Types.ObjectId, required: true, ref: "exam" },
-  }
-  // { _id: false }
+    GPA: { type: Number, required: true },
+    grade: { type: String, required: true },
+  },
+  { _id: false }
 );
 
 const studentSchema = new Schema<IStudent>(

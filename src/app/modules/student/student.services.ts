@@ -7,8 +7,17 @@ import { IpaginationOptions } from "../../../types/paginations";
 import { calculatePagination } from "../../../shared/calculatePagination";
 import { genericResponseType } from "../../../types/genericResponse";
 import { studentSearchAbleField } from "./student.constant";
-import { ExamResultType, ISearchFields, IStudent } from "./student.interface";
+import {
+  ExamResultType,
+  ISearchFields,
+  IStudent,
+  TransactionHistoryType,
+} from "./student.interface";
 import { Student } from "./student.model";
+import {
+  calculateGradeAndPoint,
+  gradeCalculation,
+} from "../../../utils/gradeCalculation";
 
 const getAllStudent = async (
   searchFields: ISearchFields,
@@ -124,15 +133,66 @@ const addExamResult = async (
   examData: ExamResultType
 ): Promise<Partial<IStudent | null>> => {
   const isResultExist = await Student.findOne({
-    "examsResult.exam": examData.exam,
-    // "examsResult.className": examData.className,
+    $and: [{ id }, { examsResult: { $elemMatch: { exam: examData?.exam } } }],
   });
-  // console.log(isResultExist);
+  // .select({ examsResult: { $elemMatch: { exam: examData?.exam } } });
 
   if (isResultExist) {
     throw new ApiError(
       httpStatus.ALREADY_REPORTED,
-      "result already added in your record"
+      `${examData.examName} result already added in your record`
+    );
+  }
+
+  let totalPoint = 0;
+  const gradedSubjects = examData?.subject.map((sub) => {
+    const { grade, point } = calculateGradeAndPoint(
+      sub.obtainedMark,
+      sub.totalMark
+    );
+    totalPoint += point * 4;
+    sub.grade = grade;
+    sub.point = point;
+    return sub;
+  });
+
+  const gpa = Number((totalPoint / (gradedSubjects.length * 4)).toFixed(2)); // each subject credit is 4
+
+  const grade = gradeCalculation(gpa);
+  examData.GPA = gpa;
+  examData.grade = grade;
+  examData.subject = gradedSubjects;
+
+  console.log(examData);
+
+  const updatedResult = await Student.findOneAndUpdate(
+    { id },
+    {
+      $addToSet: {
+        examsResult: examData,
+      },
+    },
+    {
+      new: true,
+    }
+  ).select("examsResult");
+
+  return updatedResult;
+};
+
+const updateExamResult = async (
+  id: string,
+  examData: ExamResultType
+): Promise<Partial<IStudent | null>> => {
+  const isResultExist = await Student.findOne({
+    $and: [{ id }, { examResult: { $elemMatch: { exam: examData.exam } } }],
+  });
+  // console.log(isResultExist);
+
+  if (!isResultExist) {
+    throw new ApiError(
+      httpStatus.NOT_FOUND,
+      `${examData.examName} result not found in your record`
     );
   }
 
@@ -152,7 +212,7 @@ const addExamResult = async (
     }
   ).select("examsResult");
   return updatedResult;
-};
+}; // it will be done later
 
 const deleteExamResult = async (
   id: string,
@@ -172,6 +232,124 @@ const deleteExamResult = async (
   );
 };
 
+const addTransaction = async (
+  id: string,
+  transactionData: TransactionHistoryType
+): Promise<Partial<IStudent | null>> => {
+  const isTransactionExist = await Student.findOne({
+    $and: [
+      { id },
+      {
+        transactionHistory: {
+          $elemMatch: {
+            month: transactionData.month,
+            year: transactionData.year,
+          },
+        },
+      },
+    ],
+  });
+
+  if (isTransactionExist) {
+    throw new ApiError(
+      httpStatus.ALREADY_REPORTED,
+      `Fee already provided for this ${transactionData.month} month of the year ${transactionData.year}`
+    );
+  }
+
+  const updatedResult = await Student.findOneAndUpdate(
+    { id },
+    {
+      $addToSet: {
+        transactionHistory: transactionData,
+      },
+    },
+    // $addToSet: {
+    //   transactionHistory: { $each: [transactionData] },
+    // },
+    // },
+    {
+      new: true,
+    }
+  ).select("transactionHistory");
+  return updatedResult;
+};
+
+const updateTransaction = async (
+  id: string, // id means studentId to find specific student
+  transactionId: string, //transactionId to find specific transaction for update
+  transactionData: TransactionHistoryType
+): Promise<Partial<IStudent | null>> => {
+  const isTransactionExist = await Student.findOne({
+    $and: [
+      { id },
+      {
+        transactionHistory: {
+          $elemMatch: {
+            month: transactionData.month,
+            year: transactionData.year,
+          },
+        },
+      },
+    ],
+  }).select({
+    transactionHistory: {
+      $elemMatch: {
+        month: transactionData.month,
+        year: transactionData.year,
+      },
+    },
+  });
+
+  console.log(isTransactionExist);
+
+  if (isTransactionExist) {
+    throw new ApiError(
+      httpStatus.CONFLICT,
+      `transaction already exist pay for another month`
+    );
+  }
+
+  const updatedTransactionId = new Types.ObjectId(transactionId);
+  const updatedResult = await Student.findOneAndUpdate(
+    {
+      id,
+      transactionHistory: {
+        $elemMatch: {
+          _id: updatedTransactionId,
+        },
+      },
+    },
+    {
+      $set: {
+        "transactionHistory.$": transactionData,
+      },
+    },
+    {
+      new: true,
+    }
+  ).select("transactionHistory");
+  return updatedResult;
+}; // it will be done later
+
+const deleteTransaction = async (
+  id: string,
+  transactionId: string
+): Promise<void> => {
+  const deletedTransactionId = new Types.ObjectId(transactionId);
+  await Student.findOneAndUpdate(
+    { id },
+    {
+      $pull: {
+        transactionHistory: { _id: deletedTransactionId },
+      },
+    },
+    {
+      new: true,
+    }
+  );
+};
+
 export const studentService = {
   getAllStudent,
   getStudent,
@@ -179,4 +357,8 @@ export const studentService = {
   deleteStudent,
   addExamResult,
   deleteExamResult,
+  updateExamResult, // in update exam result has some issues
+  addTransaction,
+  updateTransaction, // in update transaction has some issues
+  deleteTransaction,
 };

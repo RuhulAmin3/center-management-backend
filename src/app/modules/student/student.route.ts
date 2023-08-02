@@ -32,4 +32,23 @@ router.patch(
   studentController.deleteExamResult
 );
 
+// transaction history routes
+router.patch(
+  "/transaction/:id",
+  validationRequest(studentValidation.addTransactionZodSchema),
+  studentController.addTransaction
+);
+
+router.patch(
+  "/update-transaction/:id",
+  validationRequest(studentValidation.updateTransactionZodSchema),
+  studentController.updateTransaction
+);
+
+router.patch(
+  "/delete-transaction/:id",
+  validationRequest(studentValidation.deleteTransactionZodSchema),
+  studentController.deleteTransaction
+);
+
 export default router;

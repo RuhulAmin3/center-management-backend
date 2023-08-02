@@ -33,6 +33,7 @@ const getStudent = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 const updateStudent = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const data = req.body;
@@ -54,6 +55,8 @@ const deleteStudent = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
+// exam result controller
 const addExamResult = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const resultData = req.body;
@@ -76,6 +79,43 @@ const deleteExamResult = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// transaction controller
+const addTransaction = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const transactionData = req.body;
+  const result = await studentService.addTransaction(id, transactionData);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: " transaction added successful",
+    data: result,
+  });
+});
+const updateTransaction = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { id: transactionId, ...transactionData } = req.body;
+  const result = await studentService.updateTransaction(
+    id,
+    transactionId,
+    transactionData
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: " transaction updated successful",
+    data: result,
+  });
+});
+
+const deleteTransaction = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const transactionId = req.body.id;
+  const result = await studentService.deleteTransaction(id, transactionId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    message: " transaction deleted successful",
+    data: result,
+  });
+});
+
 export const studentController = {
   getAllStudent,
   getStudent,
@@ -83,4 +123,7 @@ export const studentController = {
   deleteStudent,
   addExamResult,
   deleteExamResult,
+  addTransaction,
+  deleteTransaction,
+  updateTransaction,
 };

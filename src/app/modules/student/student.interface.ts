@@ -16,7 +16,7 @@ type GuardianType = {
   motherContactNo: string;
 };
 
-type TransactionHistoryType = {
+export type TransactionHistoryType = {
   date: string;
   month:
     | "January"
@@ -31,17 +31,20 @@ type TransactionHistoryType = {
     | "October"
     | "November"
     | "December";
-  total: string;
-  pay: string;
-  due: string;
+  year: string;
+  total: number;
+  pay: number;
+  due?: number;
   status?: string;
   shortDescription?: string;
 };
 
 type ExamResultSubjects = {
   subjectName: string;
-  totalMark: string;
-  obtainedMark: string;
+  totalMark: number;
+  obtainedMark: number;
+  grade: string;
+  point: number;
 };
 
 export type ExamResultType = {
@@ -49,6 +52,8 @@ export type ExamResultType = {
   className: string;
   subject: ExamResultSubjects[];
   exam: Types.ObjectId | IExam;
+  GPA: number;
+  grade: string;
 };
 
 export type IStudent = {
