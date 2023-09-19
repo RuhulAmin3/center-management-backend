@@ -1,93 +1,6 @@
 import { z } from "zod";
 import { bloodGroup, gender } from "../teacher/teacher.constant";
-
-// export const createStudentZodSchema = z.object({
-//   body: z.object({
-//     password: z.string().optional(),
-//     student: z.object({
-//       name: z.object({
-//         firstName: z.string({
-//           required_error: 'first name is required',
-//         }),
-//         middleName: z.string().optional(),
-//         lastName: z.string({
-//           required_error: 'last name is required',
-//         }),
-//       }),
-//       gender: z.enum([...gender] as [string, ...string[]], {
-//         required_error: 'gender is required',
-//       }),
-//       dateOfBirth: z.string({
-//         required_error: 'date of birth is required',
-//       }),
-//       email: z
-//         .string({
-//           required_error: 'email is required',
-//         })
-//         .email(),
-//       contactNo: z.string({
-//         required_error: 'contact no is required',
-//       }),
-//       emergencyContactNo: z.string({
-//         required_error: 'emergency contact no is required',
-//       }),
-//       bloodGroup: z.enum([...bloodGroup] as [string, ...string[]]).optional(),
-//       presentAddress: z.string({
-//         required_error: 'present address is required',
-//       }),
-//       permanentAddress: z.string({
-//         required_error: 'permanent address is required',
-//       }),
-//       academicSemester: z.string({
-//         required_error: 'academic semester is required',
-//       }),
-//       academicFaculty: z.string({
-//         required_error: 'academic faculty is required',
-//       }),
-//       academicDepartment: z.string({
-//         required_error: 'academic department is required',
-//       }),
-//       guardian: z.object({
-//         fatherName: z.string({
-//           required_error: 'father name is required',
-//         }),
-//         fatherOccupation: z.string({
-//           required_error: 'father occupation is required',
-//         }),
-//         fatherContactNo: z.string({
-//           required_error: 'father contact no is required',
-//         }),
-//         motherName: z.string({
-//           required_error: 'mother name is required',
-//         }),
-//         motherOccupation: z.string({
-//           required_error: 'mother occupation is required',
-//         }),
-//         motherContactNo: z.string({
-//           required_error: 'mother contact no is required',
-//         }),
-//         address: z.string({
-//           required_error: 'address is required',
-//         }),
-//       }),
-//       localGuardian: z.object({
-//         name: z.string({
-//           required_error: 'local guardian name is required',
-//         }),
-//         occupation: z.string({
-//           required_error: ' local guardian occupation is required',
-//         }),
-//         contactNo: z.string({
-//           required_error: 'local guardian contact no is required',
-//         }),
-//         address: z.string({
-//           required_error: 'local guardian address is required',
-//         }),
-//       }),
-//       profileImage: z.string().optional(),
-//     }),
-//   }),
-// });
+import { guardianStatus } from "../guardian/guardian.constant";
 
 export const createTeacherZodSchema = z.object({
   body: z.object({
@@ -147,15 +60,6 @@ export const createTeacherZodSchema = z.object({
     }),
   }),
 });
-
-// const TransactionHistorySchema = z.object({
-//   date: z.string({
-//     required_error: "date is required",
-//   }),
-//   month: z.enum([...month] as [string, ...string[]], {
-//     required_error: "month is required",
-//   }),
-// });
 
 export const createStudentZodSchema = z.object({
   body: z.object({
@@ -257,6 +161,50 @@ export const createStudentZodSchema = z.object({
       //     })
       //   )
       //   .optional(),
+    }),
+  }),
+});
+
+export const createGuardianZodSchema = z.object({
+  body: z.object({
+    password: z
+      .string({ required_error: "password is required" })
+      .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, {
+        message:
+          "password must be minimum eight characters including at least one letter and one number",
+      }),
+    guardian: z.object({
+      firstName: z
+        .string()
+        .refine((value) => !!value, { message: "First name is required" }),
+      lastName: z
+        .string()
+        .refine((value) => !!value, { message: "Last name is required" }),
+      mykids: z.array(z.string()).refine((value) => value.length > 0, {
+        message: "At least one kid is required",
+      }),
+      gender: z
+        .enum([...gender] as [string, ...string[]])
+        .refine((value) => !!value, { message: "Gender is required" }),
+      email: z
+        .string()
+        .email({ message: "provide valid email address" })
+        .optional(),
+      professions: z
+        .string()
+        .refine((value) => !!value, { message: "Profession is required" }),
+      contactNo: z
+        .string()
+        .refine((value) => !!value, { message: "Contact number is required" }),
+      emergencyContactNo: z.string().optional(),
+      bloodGroup: z.enum(bloodGroup as [string, ...string[]]).optional(),
+      image: z.string().optional(),
+      status: z.enum(guardianStatus as [string, ...string[]]).optional(),
+      presentAddress: z
+        .string()
+        .refine((value) => !!value, { message: "Present address is required" }),
+      permanentAddress: z.string().optional(),
+      shortDescription: z.string().optional(),
     }),
   }),
 });

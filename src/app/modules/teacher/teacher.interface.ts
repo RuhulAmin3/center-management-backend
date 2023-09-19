@@ -31,27 +31,28 @@ type AttendanceType = {
   shortDescription?: string;
 };
 
-type TransactionHistoryType = {
-  date: Date;
-  month:
-    | "January"
-    | "February"
-    | "March"
-    | "April"
-    | "May"
-    | "June"
-    | "July"
-    | "August"
-    | "September"
-    | "October"
-    | "November"
-    | "December";
-  total: string;
-  pay: string;
-  due: string;
-  status?: string;
-  shortDescription?: string;
-};
+// teacher transaction history added in expense module
+// type TransactionHistoryType = {
+//   date: Date;
+//   month:
+//     | "January"
+//     | "February"
+//     | "March"
+//     | "April"
+//     | "May"
+//     | "June"
+//     | "July"
+//     | "August"
+//     | "September"
+//     | "October"
+//     | "November"
+//     | "December";
+//   total: string;
+//   pay: string;
+//   due: string;
+//   status?: string;
+//   shortDescription?: string;
+// };
 
 export type ITeacher = {
   id: string;
@@ -71,7 +72,7 @@ export type ITeacher = {
   permanentAddress?: string;
   shortDescription?: string;
   attendance?: AttendanceType[];
-  transactionHistory?: TransactionHistoryType[];
+  // transactionHistory?: TransactionHistoryType[];
 };
 
 export type ISearchFields = {

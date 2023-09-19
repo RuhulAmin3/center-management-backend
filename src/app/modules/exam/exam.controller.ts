@@ -22,7 +22,7 @@ const getAllExam = catchAsync(async (req: Request, res: Response) => {
   const result = await examService.getAllExam(filterClass, paginationOptions);
   sendResponse(res, {
     statusCode: httpStatus.OK,
-    message: "exam retreived successfully",
+    message: "all exam retreived successfully",
     data: result,
   });
 });

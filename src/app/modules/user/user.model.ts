@@ -2,6 +2,7 @@ import { Schema, Types, model } from "mongoose";
 import { IUser } from "./user.interface";
 import ApiError from "../../../errors/ApiError";
 import httpStatus from "http-status";
+import bcrypt from "bcrypt";
 
 const userSchema = new Schema<IUser>(
   {
@@ -51,6 +52,8 @@ userSchema.pre("save", async function (next) {
   if (user) {
     throw new ApiError(httpStatus.CONFLICT, "user already exist");
   }
+  const hashPassword = bcrypt.hashSync(this.password as string, 8);
+  this.password = hashPassword;
   next();
 });
 

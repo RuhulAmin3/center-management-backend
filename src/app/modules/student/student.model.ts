@@ -51,7 +51,7 @@ const ExamResultSchema = new Schema(
 
 const studentSchema = new Schema<IStudent>(
   {
-    id: { type: String, required: true },
+    id: { type: String, required: true, unique: true },
     name: {
       type: {
         firstName: { type: String, required: true },

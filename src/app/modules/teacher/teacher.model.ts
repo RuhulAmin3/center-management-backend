@@ -9,15 +9,17 @@ const AttendanceSchema = new Schema({
   shortDescription: { type: String },
 });
 
-const TransactionHistorySchema = new Schema({
-  date: { type: Date, required: true },
-  total: { type: String, required: true },
-  month: { type: String, required: true, enum: month },
-  pay: { type: String, required: true },
-  due: { type: String, required: true },
-  status: { type: String },
-  shortDescription: { type: String },
-});
+// teacher transaction history added in expense module
+
+//   const TransactionHistorySchema = new Schema({
+//   date: { type: Date, required: true },
+//   total: { type: String, required: true },
+//   month: { type: String, required: true, enum: month },
+//   pay: { type: String, required: true },
+//   due: { type: String, required: true },
+//   status: { type: String },
+//   shortDescription: { type: String },
+// });
 
 const EducationalQualificationSchema = new Schema({
   universityName: { type: String, required: true },
@@ -110,10 +112,10 @@ const teacherSchema = new Schema<ITeacher>({
     type: [AttendanceSchema],
     default: [],
   },
-  transactionHistory: {
-    type: [TransactionHistorySchema],
-    default: [],
-  },
+  // transactionHistory: {
+  //   type: [TransactionHistorySchema],
+  //   default: [],
+  // },
 });
 
 export const Teacher = model<ITeacher>("teacher", teacherSchema);

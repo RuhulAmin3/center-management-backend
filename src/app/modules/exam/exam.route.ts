@@ -12,7 +12,11 @@ router.post(
 );
 
 router.get("/:id", examController.getExam);
-router.patch("/:id", examController.updateExam);
+router.patch(
+  "/:id",
+  validationRequest(examValidation.updateExamZodSchema),
+  examController.updateExam
+);
 router.delete("/:id", examController.deleteExam);
 router.delete("/result/:id", examController.deleteExamWithExamResult);
 

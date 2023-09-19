@@ -43,6 +43,7 @@ const getAllStudent = async (
       })),
     });
   }
+
   if (filterData && Object.keys(filterData).length > 0) {
     andCondition.push({
       $and: Object.entries(filterData).map(([field, value]) => ({
@@ -136,10 +137,18 @@ const addExamResult = async (
     $and: [{ id }, { examsResult: { $elemMatch: { exam: examData?.exam } } }],
   });
   // .select({ examsResult: { $elemMatch: { exam: examData?.exam } } });
-
+  const isValidClassExamResult = await Student.findOne({
+    className: examData.className,
+  });
+  if (!isValidClassExamResult) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      `${examData.examName} result is not for class ${examData.className}.`
+    );
+  }
   if (isResultExist) {
     throw new ApiError(
-      httpStatus.ALREADY_REPORTED,
+      httpStatus.CONFLICT,
       `${examData.examName} result already added in your record`
     );
   }
@@ -311,7 +320,7 @@ const updateTransaction = async (
   }
 
   const updatedTransactionId = new Types.ObjectId(transactionId);
-  const updatedResult = await Student.findOneAndUpdate(
+  const updatedTransaction = await Student.findOneAndUpdate(
     {
       id,
       transactionHistory: {
@@ -329,7 +338,7 @@ const updateTransaction = async (
       new: true,
     }
   ).select("transactionHistory");
-  return updatedResult;
+  return updatedTransaction;
 }; // it will be done later
 
 const deleteTransaction = async (
@@ -349,6 +358,7 @@ const deleteTransaction = async (
     }
   );
 };
+
 
 export const studentService = {
   getAllStudent,

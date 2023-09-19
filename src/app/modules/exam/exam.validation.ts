@@ -27,6 +27,26 @@ const createExamZodSchema = z.object({
     }),
   }),
 });
+
+const updateExamZodSchema = z.object({
+  body: z.object({
+    examName: z.string().optional(),
+    className: z.string().optional(),
+    subjects: z
+      .array(
+        z.object({
+          name: z.string().optional(),
+          totalMark: z.string().optional(),
+        })
+      )
+      .nonempty({
+        message: "you have to add at least one subject",
+      }),
+    examDate: z.string(),
+  }),
+});
+
 export const examValidation = {
   createExamZodSchema,
+  updateExamZodSchema,
 };
