@@ -4,17 +4,19 @@ import routes from "./routes";
 import cookiParser from "cookie-parser";
 import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
 import httpStatus from "http-status";
+import morgan from "morgan";
+
 export const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use(cookiParser());
+app.use(morgan("combined"));
 app.use("/api/v1", routes);
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("in the name of Allah");
+  res.send("In the name of Allah.");
 });
 
 // handle not found api request using app.all methods
@@ -29,7 +31,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use(globalErrorHandler);
 
-// handle not found api request using middleware(you can choose one)
+// handle not found api request using middleware(you can choose one of both)
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(httpStatus.NOT_FOUND).json({
