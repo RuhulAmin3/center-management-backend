@@ -1,12 +1,17 @@
 import httpStatus from "http-status";
 import ApiError from "../../../errors/ApiError";
-import { IAttendance, IFiltersOptions } from "./attendance.interface";
+import {
+  IAttendance,
+  IFiltersOptions,
+  presenceType,
+} from "./attendance.interface";
 import { Attendance } from "./attendance.model";
 import { IpaginationOptions } from "../../../types/paginations";
 import { attendanceSearchableFields } from "./attendance.constant";
 
 const createAttendance = async (data: IAttendance): Promise<IAttendance> => {
   const isExist = await Attendance.findOne({
+    className: data.className,
     date: data.date,
     month: data.month,
     year: data.year,
@@ -82,9 +87,9 @@ const getSingleStudentAttendance = async (
   id: string,
   filters: { month: string; year: string }
 ): Promise<IAttendance[]> => {
-  const result = await Attendance.find({
+  let result = await Attendance.find({
     $and: [
-      { month: filters.month }, // case sensitive
+      { month: filters.month }, //case sensitive
       { year: filters.year },
       {
         presence: {
@@ -95,6 +100,19 @@ const getSingleStudentAttendance = async (
       },
     ],
   });
+
+  if (result) {
+    result = result.map((attend) => {
+      const isOwnPresent: presenceType[] = attend.presence.filter(
+        (present) => present.studentId == id
+      );
+
+      if (isOwnPresent) {
+        attend.presence = isOwnPresent;
+      }
+      return attend;
+    });
+  }
 
   if (result.length === 0) {
     throw new ApiError(

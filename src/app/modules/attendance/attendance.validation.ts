@@ -33,7 +33,38 @@ const createAttendanceZodSchema = z.object({
       .nonempty({ message: "presence cannot be empty" }),
   }),
 });
+const updateAttendanceZodSchema = z.object({
+  body: z.object({
+    className: z.string().optional(),
+    date: z
+      .string()
+      .optional()
+      .transform((str) => {
+        if (str) {
+          new Date(str);
+        }
+      }),
+    month: z.string().optional(),
+    year: z.string().optional(),
+    presence: z
+      .array(
+        z.object({
+          studentId: z.string({
+            required_error: "student id is required",
+          }),
+          name: z.string({
+            required_error: "name is required",
+          }),
+          isPresent: z.boolean({
+            required_error: "is present or not is required",
+          }),
+        })
+      )
+      .nonempty({ message: "presence cannot be empty" }),
+  }),
+});
 
 export const attendanceValidation = {
   createAttendanceZodSchema,
+  updateAttendanceZodSchema,
 };

@@ -51,7 +51,7 @@ const getSingleStudentAttendance = catchAsync(
     );
     sendResponse<IAttendance[]>(res, {
       statusCode: httpStatus.OK,
-      message: "student attendance report retrieved successfully",
+      message: "monthly student attendance report retrieved successfully",
       data: result,
     });
   }

@@ -1,13 +1,13 @@
+import { IStudent } from "../student/student.interface";
 import { User } from "./user.model";
 
-export const generateStudentId = (
-  studentClass: string,
-  roll: string,
-  section: string
-): string => {
+export const generateStudentId = (student: IStudent): string => {
   // const randomNumber = Math.floor(Math.random() * 100000).toString();
-  let studentId = `S${section}-${studentClass}${roll}`;
-  studentId = studentId.padEnd(8, "0");
+  const studentId = `S${student.section}${student.classRoll}-${student.className
+    .substring(student.className.length - 2)
+    .toUpperCase()}${student.admissionYear.substring(
+    student.admissionYear.length - 2
+  )}`;
   return studentId;
 };
 

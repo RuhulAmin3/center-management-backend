@@ -135,7 +135,7 @@ const approvedOrRejectAccount = async (
     throw new ApiError(httpStatus.NOT_FOUND, "guardian account not found");
   }
 
-  if (status === "active") {
+  if (status === "approve") {
     const activeGuardianAccount = await Guardian.findOneAndUpdate(
       { id },
       { status },
@@ -161,6 +161,13 @@ const approvedOrRejectAccount = async (
       message:
         "your information is not valid. Try to create an account with valid information",
     };
+  } else if (status === "block") {
+    const blockGuardianAccount = await Guardian.findOneAndUpdate(
+      { id },
+      { status },
+      { new: true }
+    );
+    return blockGuardianAccount;
   } else {
     await Guardian.findOneAndUpdate({ id }, { status }, { new: true });
     return {

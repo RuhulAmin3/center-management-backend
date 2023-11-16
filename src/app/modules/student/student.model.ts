@@ -65,6 +65,7 @@ const studentSchema = new Schema<IStudent>(
     email: { type: String },
     contactNo: { type: String, required: true },
     emergencyContactNo: { type: String },
+    admissionYear: { type: String, required: true },
     bloodGroup: {
       type: String,
       enum: bloodGroup,
