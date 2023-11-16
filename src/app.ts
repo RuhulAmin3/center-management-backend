@@ -16,7 +16,7 @@ app.use(morgan("combined"));
 app.use("/api/v1", routes);
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("In the name of Allah.");
+  res.send("in the name of Allah");
 });
 
 // handle not found api request using app.all methods

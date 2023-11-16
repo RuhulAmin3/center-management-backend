@@ -30,7 +30,6 @@ const getAllClasses = async (
 
   const whereCondition =
     Object.keys(filtersOption).length > 0 ? filtersOption : {};
-  console.log(whereCondition);
   const result = await Class.find(whereCondition)
     .populate("studentsInfo")
     .sort(sortCondition)
@@ -85,7 +84,6 @@ const deleteClass = async (className: string): Promise<IClass> => {
     await session.endSession();
     throw err;
   }
-
   return result;
 };
 

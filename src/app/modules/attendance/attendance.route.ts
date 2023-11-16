@@ -12,7 +12,11 @@ router.post(
 
 router.get("/:id", attendanceController.getAttendance);
 router.get("/student/:id", attendanceController.getSingleStudentAttendance);
-router.patch("/:id", attendanceController.updateAttendance);
+router.patch(
+  "/:id",
+  validationRequest(attendanceValidation.updateAttendanceZodSchema),
+  attendanceController.updateAttendance
+);
 router.delete("/:id", attendanceController.deleteAttendance);
 
 router.get("/", attendanceController.getAllAttendance);

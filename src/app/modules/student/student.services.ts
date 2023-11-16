@@ -131,30 +131,34 @@ const updateStudent = async (
 
 const addExamResult = async (
   id: string,
-  examData: ExamResultType
+  examResultData: ExamResultType
 ): Promise<Partial<IStudent | null>> => {
   const isResultExist = await Student.findOne({
-    $and: [{ id }, { examsResult: { $elemMatch: { exam: examData?.exam } } }],
+    $and: [
+      { id },
+      { examsResult: { $elemMatch: { exam: examResultData?.exam } } },
+    ],
   });
   // .select({ examsResult: { $elemMatch: { exam: examData?.exam } } });
   const isValidClassExamResult = await Student.findOne({
-    className: examData.className,
+    className: examResultData.className,
   });
   if (!isValidClassExamResult) {
     throw new ApiError(
       httpStatus.BAD_REQUEST,
-      `${examData.examName} result is not for class ${examData.className}.`
+      `${examResultData.examName} result is not for class ${examResultData.className}.`
     );
   }
+
   if (isResultExist) {
     throw new ApiError(
       httpStatus.CONFLICT,
-      `${examData.examName} result already added in your record`
+      `${examResultData.examName} result already added in your record`
     );
   }
 
   let totalPoint = 0;
-  const gradedSubjects = examData?.subject.map((sub) => {
+  const gradedSubjects = examResultData?.subject.map((sub) => {
     const { grade, point } = calculateGradeAndPoint(
       sub.obtainedMark,
       sub.totalMark
@@ -168,17 +172,17 @@ const addExamResult = async (
   const gpa = Number((totalPoint / (gradedSubjects.length * 4)).toFixed(2)); // each subject credit is 4
 
   const grade = gradeCalculation(gpa);
-  examData.GPA = gpa;
-  examData.grade = grade;
-  examData.subject = gradedSubjects;
+  examResultData.GPA = gpa;
+  examResultData.grade = grade;
+  examResultData.subject = gradedSubjects;
 
-  console.log(examData);
+  console.log(examResultData);
 
   const updatedResult = await Student.findOneAndUpdate(
     { id },
     {
       $addToSet: {
-        examsResult: examData,
+        examsResult: examResultData,
       },
     },
     {
@@ -358,7 +362,6 @@ const deleteTransaction = async (
     }
   );
 };
-
 
 export const studentService = {
   getAllStudent,

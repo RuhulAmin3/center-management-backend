@@ -16,6 +16,9 @@ import { Student } from "../student/student.model";
 import { Class } from "../class/class.model";
 import { IGuardian } from "../guardian/guardian.interface";
 import { Guardian } from "../guardian/guardian.model";
+import { ImageUploader } from "../../../shared/ImageUploader";
+import { IFile, IUploadedFile } from "../../../types/file";
+import { USER_ROLE } from "../../../enums/userEnum";
 
 const getAllUsers = async (): Promise<IUser[]> => {
   const result = await User.find();
@@ -27,8 +30,14 @@ const getUser = async (id: string): Promise<IUser | null> => {
   return result;
 };
 
-const createStudent = async (student: IStudent, user: IUser) => {
-  const { className: studentClass, classRoll, section } = student || {};
+const createStudent = async (student: IStudent, user: IUser, file: IFile) => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  const uploadedImage: IUploadedFile = await ImageUploader.uploadToCloudinary(
+    file
+  );
+
+  student.image = uploadedImage?.secure_url;
 
   // set password
   if (!user?.password) {
@@ -36,14 +45,14 @@ const createStudent = async (student: IStudent, user: IUser) => {
   }
 
   // set role
-  user.role = "student";
+  user.role = USER_ROLE.STUDENT;
 
   // transaction and roll back start from here
   const session = await mongoose.startSession();
   let userAllData = null;
   try {
     session.startTransaction();
-    const id = generateStudentId(studentClass, classRoll, section);
+    const id = generateStudentId(student);
     user.id = id;
     student.id = id;
     // new student will be an array;
@@ -97,7 +106,8 @@ const createStudent = async (student: IStudent, user: IUser) => {
 
 const createTeacher = async (
   teacher: ITeacher,
-  user: IUser
+  user: IUser,
+  file: IFile
 ): Promise<IUser | null> => {
   // set teacher password;
   if (!user?.password) {
@@ -105,7 +115,14 @@ const createTeacher = async (
   }
 
   // set role
-  user.role = "teacher";
+  user.role = USER_ROLE.TEACHER;
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  const uploadedImage: IUploadedFile = await ImageUploader.uploadToCloudinary(
+    file
+  );
+  teacher.image = uploadedImage.secure_url;
 
   const session = await mongoose.startSession();
   let userAllData = null;
@@ -114,6 +131,7 @@ const createTeacher = async (
     const id = await generateTeacherId();
     user.id = id;
     teacher.id = id;
+
     const newTeacher = await Teacher.create([teacher], { session });
     if (!newTeacher.length) {
       throw new ApiError(httpStatus.BAD_REQUEST, "failed to create Teacher");
@@ -141,7 +159,8 @@ const createTeacher = async (
 
 const createGuardian = async (
   guardian: IGuardian,
-  user: IUser
+  user: IUser,
+  file: IFile
 ): Promise<IUser | null> => {
   // set teacher password;
   // if (!user?.password) {
@@ -149,7 +168,14 @@ const createGuardian = async (
   // }
 
   // set role
-  user.role = "guardian";
+  user.role = USER_ROLE.GUARDIAN;
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  const uploadedImage: IUploadedFile = await ImageUploader.uploadToCloudinary(
+    file
+  );
+  guardian.image = uploadedImage.secure_url;
 
   const session = await mongoose.startSession();
   let userAllData = null;

@@ -34,6 +34,7 @@ const getAllTeacher = async (
       })),
     });
   }
+
   if (filterData && Object.keys(filterData).length > 0) {
     andCondition.push({
       $and: Object.entries(filterData).map(([field, value]) => ({

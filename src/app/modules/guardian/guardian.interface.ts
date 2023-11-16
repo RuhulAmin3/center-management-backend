@@ -10,7 +10,7 @@ export type IGuardian = {
   emergencyContactNo?: string;
   bloodGroup?: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
   image?: string;
-  status: "pending" | "active" | "reject";
+  status: "pending" | "approve" | "reject" | "block";
   presentAddress: string;
   permanentAddress?: string;
   shortDescription?: string;

@@ -5,4 +5,9 @@ export const attendanceFilterableFields = [
   "year",
 ];
 
-export const attendanceSearchableFields = ["className", "month", "year"];
+export const attendanceSearchableFields = [
+  "className",
+  "month",
+  "year",
+  "presence.studentId",
+];

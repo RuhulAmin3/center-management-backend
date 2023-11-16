@@ -61,6 +61,7 @@ export type IStudent = {
   name: StudentNameType;
   gender: "Male" | "Female";
   dateOfBirth: string;
+  admissionYear: string;
   email?: string;
   contactNo: string;
   emergencyContactNo?: string;
