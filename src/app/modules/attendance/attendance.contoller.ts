@@ -41,6 +41,7 @@ const getAttendance = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 const getSingleStudentAttendance = catchAsync(
   async (req: Request, res: Response) => {
     const id = req.params.id;

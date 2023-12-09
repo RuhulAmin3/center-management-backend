@@ -18,6 +18,7 @@ router.delete(
   authValidation(USER_ROLE.ADMIN),
   studentController.deleteStudent
 );
+
 router.get("/", studentController.getAllStudent);
 
 // exam result routes
