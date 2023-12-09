@@ -14,6 +14,11 @@ const classSchema = new Schema<IClass>(
       type: [String],
       default: [],
     },
+    subjects: {
+      type: [String],
+      default: [],
+      required: [true, "subjects is required"],
+    },
   },
   {
     timestamps: true,

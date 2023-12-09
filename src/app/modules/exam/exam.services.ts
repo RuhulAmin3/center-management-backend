@@ -69,6 +69,7 @@ const deleteExam = async (id: string): Promise<void> => {
 };
 
 const deleteExamWithExamResult = async (id: string): Promise<void> => {
+  // it will done later properly
   const exam = await Exam.findById(id);
   if (!exam) {
     throw new ApiError(httpStatus.NOT_FOUND, "exam not fund");
