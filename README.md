@@ -130,9 +130,8 @@
 ### Technology
 
 - TypeScript
-- Node JS
 - Express JS
 - Jsonwebtoken
 - Mongodb
-- Prisma
+- Mongoose
 - Zod
